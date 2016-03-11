@@ -1,0 +1,24 @@
+%
+% Paths in a Graph
+%
+% Datalog Formulation
+:-type(edge(start:char,destination:char,cost:int)).
+edge(a,b,4).
+edge(a,c,6).
+edge(b,a,3).
+edge(b,d,8).
+
+cpath(X,Y,C) :-
+  edge(X,Y,C).
+cpath(X,Y,C) :-
+  cpath(X,Z,C1),
+  edge(Z,Y,C2),
+  sum(edge(_,_,E),E,Sum),
+  C1+C2<Sum,
+  C is C1+C2.
+  
+minpath(X,Y,C) :- min(cpath(X,Y,D),D,C).
+
+path(X,Y) :- path(X,Z), edge(Z,Y,_).
+path(X,Y) :- edge(X,Y,_).
+

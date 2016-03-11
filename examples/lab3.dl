@@ -1,0 +1,61 @@
+% Project lab3
+male(bob).
+male(jim).
+male(piter).
+male(john).
+male(tom).
+
+female(thea).
+female(edwina).
+female(ann).
+female(lisa).
+
+mother(thea,edwina).
+mother(ann,piter).
+mother(ann,tom).
+mother(lisa,bob).
+
+father(jim, thea).
+father(john,piter).
+father(john,tom).
+father(piter,bob).
+father(tom, edwina).
+
+married(tom, thea).
+married(john, ann).
+
+parent(X,Y) :- father(X,Y).
+parent(X,Y) :- mother(X,Y).
+
+ancestor(X, Y) :- parent(X, Y).
+ancestor(X, Y) :- parent(X, Z), ancestor(Z, Y).
+
+% Implemented rules
+uncle(X,Y):- parent(Z,Y), sibling(Z,X), male(X).
+uncle(X,Y):- parent(Z,Y), sibling(Z,W), married(X,W).
+
+ant(X,Y):- parent(Z,Y), sibling(Z,X), female(X).
+ant(X,Y):- parent(Z,Y), sibling(Z,W), married(W,X).
+
+grandparent(X,Y) :- parent(X,Z), parent(Z,Y).
+
+cousin(X,Y) :- uncle(Z,X), father(Z,Y).
+cousin(X,Y) :- ant(Z,X), mother(Z,Y).
+
+sibling(X,Y) :- parent(Z,X), parent(Z,Y), not(sameperson(X,Y)).
+
+relative(X,Y) :- ancestor(Z,X), ancestor(Z,Y), not(sameperson(X,Y)).
+relative(X,Y) :- ancestor(X,Y).
+relative(X,Y) :- ancestor(Y,X).
+
+% Helper rules
+person(X) :- male(X).
+person(X) :- female(X).
+
+sameperson(X,Y) :- fj(person(X), person(Y), X=Y).
+
+successor(X,Y) :-
+  parent(Y,X).
+successor(X,Y) :-
+  successor(Z,Y),
+  parent(Z,X).
