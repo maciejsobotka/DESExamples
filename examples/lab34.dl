@@ -1,28 +1,63 @@
-% Project lab3
+% Project lab3 n' Lab 4
 male(bob).
 male(jim).
 male(piter).
 male(john).
 male(tom).
+% new males
+male(jack).
+male(johnny).
 
 female(thea).
 female(edwina).
 female(ann).
 female(lisa).
+% new females
+female(elisa).
+female(carroll).
+female(martha).
 
 mother(thea,edwina).
 mother(ann,piter).
 mother(ann,tom).
 mother(lisa,bob).
+% new moms
+mother(elisa,ann).
+mother(carroll,thea).
+mother(martha,carroll).
 
 father(jim, thea).
 father(john,piter).
 father(john,tom).
 father(piter,bob).
 father(tom, edwina).
+% new pops
+father(jack,ann).
+father(johnny,carroll).
 
 married(tom, thea).
 married(john, ann).
+% new couples
+married(jack,elisa).
+married(jim,carroll).
+married(johnny,martha).
+
+% age
+:-type(age(person:string,age:int)).
+age(bob,5).
+age(lisa,30).
+age(piter,32).
+age(edwina,9).
+age(tom,40).
+age(thea,37).
+age(john,64).
+age(ann,60).
+age(jim,69).
+age(carrol,68).
+age(jack,90).
+age(elisa,89).
+age(johnny,95).
+age(martha,92).
 
 parent(X,Y) :- father(X,Y).
 parent(X,Y) :- mother(X,Y).
@@ -52,10 +87,35 @@ relative(X,Y) :- ancestor(Y,X).
 person(X) :- male(X).
 person(X) :- female(X).
 
-sameperson(X,Y) :- fj(person(X), person(Y), X=Y).
+sameperson(X,Y) :- person(X), person(Y), X=Y.
 
 successor(X,Y) :-
   parent(Y,X).
 successor(X,Y) :-
   successor(Z,Y),
   parent(Z,X).
+  
+% L4
+relative(X,Y,1) :-
+  parent(Y,X).
+relative(X,Y,Z) :-
+  parent(Y,V),
+  relative(X,V,Z0),
+  Z0>0,
+  Z is Z0+1.
+relative(X,Y,0) :-
+  person(X),
+  person(Y),
+  not(sameperson(X,Y)),
+  not(relative(Y,X)).
+
+progenitor(X,Y,Z) :-
+  max(relative(_,_,V),V,Z),
+  relative(X,Y,Z).
+
+relative(X,Y,Z,W) :-
+  relative(X,Y,Z),
+  age(X,V1),
+  age(Y,V2),
+  W is V2-V1.
+ 
