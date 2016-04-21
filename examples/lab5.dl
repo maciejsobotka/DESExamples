@@ -1,4 +1,4 @@
-% Project lab3 n' Lab 4
+% Project lab3 n' Lab 4 n' Lab 5
 male(bob).
 male(jim).
 male(piter).
@@ -53,7 +53,7 @@ age(thea,37).
 age(john,64).
 age(ann,60).
 age(jim,69).
-age(carrol,68).
+age(carroll,68).
 age(jack,90).
 age(elisa,89).
 age(johnny,95).
@@ -118,4 +118,74 @@ relative(X,Y,Z,W) :-
   age(X,V1),
   age(Y,V2),
   W is V2-V1.
+  
+% L5
+% workin'
+works_in(bob, apple).
+works_in(piter, apple).
+works_in(john, microsoft).
+works_in(tom, ibm).
+works_in(edwina, apple).
+works_in(thea, ibm).
+works_in(ann, microsoft).
+works_in(lisa, oracle).
+% new works_in
+works_in(jim, microsoft).
+works_in(carroll, microsoft).
+works_in(jack, apple).
+works_in(elisa, microsoft).
+works_in(johnny, ibm).
+works_in(martha, oracle).
+
+reports_to(bob,piter).
+reports_to(john,ann).
+reports_to(tom,thea).
+% new reports_to
+reports_to(thea,johnny).
+reports_to(piter,jack).
+reports_to(carroll,jim).
+reports_to(lisa,martha).
+reports_to(ann,elisa).
+reports_to(edwina,jack).
+
+firm(X,Y,0) :-
+  count(works_in(_,X),Y),
+  not(relatives_workin(X,_,_)). 
+firm(X,Y,Z) :-
+  count(works_in(_,X),Y),
+  count_distinct(relatives_workin(X,P,_),P,Z).
  
+hire(X,Y) :-
+  company(X),
+  person(Y),
+  not(nohire(X,Y)).
+  
+nepotism(X,Y) :-
+  reports_to(X,Z),
+  relative(X,Z),
+  relative(X,Z,Y).
+nepotism(X,Y) :-
+  reports_to(X,Z),
+  relative(Z,X),
+  relative(Z,X,Y).
+
+% Helper Rules 
+company(microsoft).
+company(ibm).
+company(oracle).
+company(apple).
+
+nohire(X,Y) :-
+  works_in(Z,X),
+  relative(Y,Z,1).
+nohire(X,Y) :-
+  works_in(Z,X),
+  relative(Z,Y,1).
+nohire(X,Y) :-
+  works_in(Y,X).
+
+relatives_workin(X,P1,P2) :-
+  works_in(P1,X),
+  works_in(P2,X),
+  relative(P1,P2),
+  not(sameperson(P1,P2)).
