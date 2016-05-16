@@ -1,4 +1,4 @@
-% Project lab3 n' Lab 4 n' Lab 5
+% Project lab3 n' Lab 4 n' Lab 5 'n Lab6
 male(bob).
 male(jim).
 male(piter).
@@ -189,3 +189,90 @@ relatives_workin(X,P1,P2) :-
   works_in(P2,X),
   relative(P1,P2),
   not(sameperson(P1,P2)).
+
+% L6
+lives_in(bob, newyork).
+lives_in(piter, atlanta).
+lives_in(john, boston).
+lives_in(tom, chicago).
+lives_in(jim, milwaukee).
+lives_in(thea, detroit).
+% new lives_in
+lives_in(lisa, newyork).
+lives_in(jack, atlanta).
+lives_in(elisa, boston).
+lives_in(johnny, chicago).
+lives_in(carroll, milwaukee).
+lives_in(edwina, detroit).
+lives_in(ann, milwaukee).
+lives_in(martha, detroit).
+
+path(chicago,atlanta, 100).
+path(chicago,milwaukee, 200).
+path(milwaukee,detroit, 150).
+path(milwaukee,newyork, 300).
+path(chicago,detroit, 250).
+path(detroit, newyork, 350).
+path(newyork, boston, 200).
+path(atlanta,boston, 100).
+path(atlanta, milwaukee, 250).
+
+city(boston).
+city(atlanta).
+city(chicago).
+city(detroit).
+city(milwaukee).
+city(newyork).
+
+apath(X,Y,0) :-
+  city(X),
+  city(Y),
+  X = Y.
+apath(X,Y,Z) :-
+  path(X,Y,Z).
+apath(X,Y,Z) :-
+  apath(X,W,Z0),
+  path(W,Y,Z1),
+  sum(path(_,_,E),E,Sum),
+  Z0+Z1<Sum,
+  Z is Z0+Z1.
+  
+minpath(X,Y,Z) :- 
+  min(apath(X,Y,D),D,Z).
+  
+maxpath(X,Y,Z) :-
+  max(apath(X,Y,D),D,Z).
+  
+% X-company, P1-person, P2-person, W-avgpath
+avgpath_company(X,P1,P2,W) :-
+  works_in(P1,X),
+  works_in(P2,X),
+  not(sameperson(P1,P2)),
+  lives_in(P1,C1),
+  lives_in(P2,C2),
+  apath(C1,C2,_),
+  avg(apath(C1,C2,W0),W0,W).
+avgpath_company(X,P1,P2,W) :-
+  works_in(P1,X),
+  works_in(P2,X),
+  not(sameperson(P1,P2)),
+  lives_in(P1,C1),
+  lives_in(P2,C2),
+  apath(C2,C1,_),
+  avg(apath(C2,C1,W0),W0,W).
+
+% X-person, Y-person, Z-relative lvl, W-avgpath
+avgpath_relative(X,Y,Z,W) :-
+  lives_in(X,C1),
+  lives_in(Y,C2),
+  relative(X,Y),
+  relative(X,Y,Z),
+  apath(C1,C2,_),
+  avg(apath(C1,C2,W0),W0,W).
+avgpath_relative(X,Y,Z,W) :-
+  lives_in(X,C1),
+  lives_in(Y,C2),
+  relative(X,Y),
+  relative(X,Y,Z),
+  apath(C2,C1,_),
+  avg(apath(C2,C1,W0),W0,W).
